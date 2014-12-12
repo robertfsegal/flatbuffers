@@ -117,6 +117,7 @@ void AccessFlatBufferTest(const std::string &flatbuf) {
     flatbuf.length());
   TEST_EQ(VerifyMonsterBuffer(verifier), true);
 
+  TEST_EQ(strcmp(MonsterIdentifier(), "MONS"), 0);
   TEST_EQ(MonsterBufferHasIdentifier(flatbuf.c_str()), true);
 
   // Access the buffer from the root.
@@ -136,6 +137,7 @@ void AccessFlatBufferTest(const std::string &flatbuf) {
   TEST_EQ(pos->test3().b(), 20);
 
   auto inventory = monster->inventory();
+  TEST_EQ(VectorLength(inventory), 10);  // Works even if inventory is null.
   TEST_NOTNULL(inventory);
   unsigned char inv_data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
   for (auto it = inventory->begin(); it != inventory->end(); ++it)

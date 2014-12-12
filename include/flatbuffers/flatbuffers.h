@@ -296,6 +296,12 @@ protected:
   uoffset_t length_;
 };
 
+// Convenient helper function to get the length of any vector, regardless
+// of wether it is null or not (the field is not set).
+template<typename T> static inline size_t VectorLength(const Vector<T> *v) {
+  return v ? v->Length() : 0;
+}
+
 struct String : public Vector<char> {
   const char *c_str() const { return reinterpret_cast<const char *>(Data()); }
 };
@@ -304,6 +310,7 @@ struct String : public Vector<char> {
 // with custom allocation (see the FlatBufferBuilder constructor).
 class simple_allocator {
  public:
+  virtual ~simple_allocator() {}
   virtual uint8_t *allocate(size_t size) const { return new uint8_t[size]; }
   virtual void deallocate(uint8_t *p) const { delete[] p; }
 };

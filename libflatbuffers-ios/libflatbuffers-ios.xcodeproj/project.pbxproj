@@ -1,0 +1,456 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6F8D0B991A998F090004FDE9 /* libflatbuffers_ios.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6F8D0B981A998F090004FDE9 /* libflatbuffers_ios.h */; };
+		6F8D0B9B1A998F090004FDE9 /* libflatbuffers_ios.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8D0B9A1A998F090004FDE9 /* libflatbuffers_ios.m */; };
+		6F8D0BA11A998F090004FDE9 /* liblibflatbuffers-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F8D0B951A998F090004FDE9 /* liblibflatbuffers-ios.a */; };
+		6FE96DFB1A9AAE0600C1AECC /* idl_gen_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6FE96DF41A9AAE0600C1AECC /* idl_gen_cpp.cpp */; };
+		6FE96DFC1A9AAE0600C1AECC /* idl_gen_fbs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6FE96DF51A9AAE0600C1AECC /* idl_gen_fbs.cpp */; };
+		6FE96DFD1A9AAE0600C1AECC /* idl_gen_general.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6FE96DF61A9AAE0600C1AECC /* idl_gen_general.cpp */; };
+		6FE96DFE1A9AAE0600C1AECC /* idl_gen_go.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6FE96DF71A9AAE0600C1AECC /* idl_gen_go.cpp */; };
+		6FE96DFF1A9AAE0600C1AECC /* idl_gen_text.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6FE96DF81A9AAE0600C1AECC /* idl_gen_text.cpp */; };
+		6FE96E001A9AAE0600C1AECC /* idl_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6FE96DF91A9AAE0600C1AECC /* idl_parser.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6F8D0BA21A998F090004FDE9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6F8D0B8D1A998F090004FDE9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F8D0B941A998F090004FDE9;
+			remoteInfo = "libflatbuffers-ios";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6F8D0B931A998F090004FDE9 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+				6F8D0B991A998F090004FDE9 /* libflatbuffers_ios.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		6F8D0B951A998F090004FDE9 /* liblibflatbuffers-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "liblibflatbuffers-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6F8D0B981A998F090004FDE9 /* libflatbuffers_ios.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libflatbuffers_ios.h; sourceTree = "<group>"; };
+		6F8D0B9A1A998F090004FDE9 /* libflatbuffers_ios.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = libflatbuffers_ios.m; sourceTree = "<group>"; };
+		6F8D0BA01A998F090004FDE9 /* libflatbuffers-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "libflatbuffers-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6F8D0BA61A998F090004FDE9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6FE96DEF1A9AADFC00C1AECC /* flatbuffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = flatbuffers.h; sourceTree = "<group>"; };
+		6FE96DF01A9AADFC00C1AECC /* idl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = idl.h; sourceTree = "<group>"; };
+		6FE96DF11A9AADFC00C1AECC /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
+		6FE96DF41A9AAE0600C1AECC /* idl_gen_cpp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = idl_gen_cpp.cpp; sourceTree = "<group>"; };
+		6FE96DF51A9AAE0600C1AECC /* idl_gen_fbs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = idl_gen_fbs.cpp; sourceTree = "<group>"; };
+		6FE96DF61A9AAE0600C1AECC /* idl_gen_general.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = idl_gen_general.cpp; sourceTree = "<group>"; };
+		6FE96DF71A9AAE0600C1AECC /* idl_gen_go.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = idl_gen_go.cpp; sourceTree = "<group>"; };
+		6FE96DF81A9AAE0600C1AECC /* idl_gen_text.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = idl_gen_text.cpp; sourceTree = "<group>"; };
+		6FE96DF91A9AAE0600C1AECC /* idl_parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = idl_parser.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6F8D0B921A998F090004FDE9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6F8D0B9D1A998F090004FDE9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F8D0BA11A998F090004FDE9 /* liblibflatbuffers-ios.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6F8D0B8C1A998F090004FDE9 = {
+			isa = PBXGroup;
+			children = (
+				6F8D0B971A998F090004FDE9 /* libflatbuffers-ios */,
+				6F8D0BA41A998F090004FDE9 /* libflatbuffers-iosTests */,
+				6F8D0B961A998F090004FDE9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6F8D0B961A998F090004FDE9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6F8D0B951A998F090004FDE9 /* liblibflatbuffers-ios.a */,
+				6F8D0BA01A998F090004FDE9 /* libflatbuffers-iosTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6F8D0B971A998F090004FDE9 /* libflatbuffers-ios */ = {
+			isa = PBXGroup;
+			children = (
+				6FE96DF21A9AAE0600C1AECC /* src */,
+				6FE96DED1A9AADFC00C1AECC /* include */,
+				6F8D0B981A998F090004FDE9 /* libflatbuffers_ios.h */,
+				6F8D0B9A1A998F090004FDE9 /* libflatbuffers_ios.m */,
+			);
+			path = "libflatbuffers-ios";
+			sourceTree = "<group>";
+		};
+		6F8D0BA41A998F090004FDE9 /* libflatbuffers-iosTests */ = {
+			isa = PBXGroup;
+			children = (
+				6F8D0BA51A998F090004FDE9 /* Supporting Files */,
+			);
+			path = "libflatbuffers-iosTests";
+			sourceTree = "<group>";
+		};
+		6F8D0BA51A998F090004FDE9 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				6F8D0BA61A998F090004FDE9 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		6FE96DED1A9AADFC00C1AECC /* include */ = {
+			isa = PBXGroup;
+			children = (
+				6FE96DEE1A9AADFC00C1AECC /* flatbuffers */,
+			);
+			name = include;
+			path = ../../include;
+			sourceTree = "<group>";
+		};
+		6FE96DEE1A9AADFC00C1AECC /* flatbuffers */ = {
+			isa = PBXGroup;
+			children = (
+				6FE96DEF1A9AADFC00C1AECC /* flatbuffers.h */,
+				6FE96DF01A9AADFC00C1AECC /* idl.h */,
+				6FE96DF11A9AADFC00C1AECC /* util.h */,
+			);
+			path = flatbuffers;
+			sourceTree = "<group>";
+		};
+		6FE96DF21A9AAE0600C1AECC /* src */ = {
+			isa = PBXGroup;
+			children = (
+				6FE96DF41A9AAE0600C1AECC /* idl_gen_cpp.cpp */,
+				6FE96DF51A9AAE0600C1AECC /* idl_gen_fbs.cpp */,
+				6FE96DF61A9AAE0600C1AECC /* idl_gen_general.cpp */,
+				6FE96DF71A9AAE0600C1AECC /* idl_gen_go.cpp */,
+				6FE96DF81A9AAE0600C1AECC /* idl_gen_text.cpp */,
+				6FE96DF91A9AAE0600C1AECC /* idl_parser.cpp */,
+			);
+			name = src;
+			path = ../../src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6F8D0B941A998F090004FDE9 /* libflatbuffers-ios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6F8D0BA91A998F090004FDE9 /* Build configuration list for PBXNativeTarget "libflatbuffers-ios" */;
+			buildPhases = (
+				6F8D0BC01A9990550004FDE9 /* ShellScript */,
+				6F8D0B911A998F090004FDE9 /* Sources */,
+				6F8D0B921A998F090004FDE9 /* Frameworks */,
+				6F8D0B931A998F090004FDE9 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "libflatbuffers-ios";
+			productName = "libflatbuffers-ios";
+			productReference = 6F8D0B951A998F090004FDE9 /* liblibflatbuffers-ios.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		6F8D0B9F1A998F090004FDE9 /* libflatbuffers-iosTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6F8D0BAC1A998F090004FDE9 /* Build configuration list for PBXNativeTarget "libflatbuffers-iosTests" */;
+			buildPhases = (
+				6F8D0B9C1A998F090004FDE9 /* Sources */,
+				6F8D0B9D1A998F090004FDE9 /* Frameworks */,
+				6F8D0B9E1A998F090004FDE9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6F8D0BA31A998F090004FDE9 /* PBXTargetDependency */,
+			);
+			name = "libflatbuffers-iosTests";
+			productName = "libflatbuffers-iosTests";
+			productReference = 6F8D0BA01A998F090004FDE9 /* libflatbuffers-iosTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6F8D0B8D1A998F090004FDE9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = "Get Set Games Inc.";
+				TargetAttributes = {
+					6F8D0B941A998F090004FDE9 = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+					6F8D0B9F1A998F090004FDE9 = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+				};
+			};
+			buildConfigurationList = 6F8D0B901A998F090004FDE9 /* Build configuration list for PBXProject "libflatbuffers-ios" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 6F8D0B8C1A998F090004FDE9;
+			productRefGroup = 6F8D0B961A998F090004FDE9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6F8D0B941A998F090004FDE9 /* libflatbuffers-ios */,
+				6F8D0B9F1A998F090004FDE9 /* libflatbuffers-iosTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6F8D0B9E1A998F090004FDE9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6F8D0BC01A9990550004FDE9 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = env;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6F8D0B911A998F090004FDE9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6FE96DFE1A9AAE0600C1AECC /* idl_gen_go.cpp in Sources */,
+				6FE96DFF1A9AAE0600C1AECC /* idl_gen_text.cpp in Sources */,
+				6FE96DFC1A9AAE0600C1AECC /* idl_gen_fbs.cpp in Sources */,
+				6FE96E001A9AAE0600C1AECC /* idl_parser.cpp in Sources */,
+				6FE96DFD1A9AAE0600C1AECC /* idl_gen_general.cpp in Sources */,
+				6FE96DFB1A9AAE0600C1AECC /* idl_gen_cpp.cpp in Sources */,
+				6F8D0B9B1A998F090004FDE9 /* libflatbuffers_ios.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6F8D0B9C1A998F090004FDE9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6F8D0BA31A998F090004FDE9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F8D0B941A998F090004FDE9 /* libflatbuffers-ios */;
+			targetProxy = 6F8D0BA21A998F090004FDE9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		6F8D0BA71A998F090004FDE9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		6F8D0BA81A998F090004FDE9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		6F8D0BAA1A998F090004FDE9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"../include\"",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		6F8D0BAB1A998F090004FDE9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"../include\"",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		6F8D0BAD1A998F090004FDE9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "libflatbuffers-iosTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		6F8D0BAE1A998F090004FDE9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "libflatbuffers-iosTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6F8D0B901A998F090004FDE9 /* Build configuration list for PBXProject "libflatbuffers-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6F8D0BA71A998F090004FDE9 /* Debug */,
+				6F8D0BA81A998F090004FDE9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6F8D0BA91A998F090004FDE9 /* Build configuration list for PBXNativeTarget "libflatbuffers-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6F8D0BAA1A998F090004FDE9 /* Debug */,
+				6F8D0BAB1A998F090004FDE9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6F8D0BAC1A998F090004FDE9 /* Build configuration list for PBXNativeTarget "libflatbuffers-iosTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6F8D0BAD1A998F090004FDE9 /* Debug */,
+				6F8D0BAE1A998F090004FDE9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 6F8D0B8D1A998F090004FDE9 /* Project object */;
+}

@@ -98,6 +98,23 @@ LanguageParameters language_parameters[] = {
     "\n}\n",
     "",
     "using FlatBuffers;\n\n",
+  },
+  // TODO: add Go support to the general generator.
+  // WARNING: this is currently only used for generating make rules for Go.
+  {
+    GeneratorOptions::kGo,
+    true,
+    ".go",
+    "string",
+    "bool ",
+    "\n{\n",
+    "const ",
+    "",
+    "package ",
+    "",
+    "",
+    "",
+    "import (\n\tflatbuffers \"github.com/google/flatbuffers/go\"\n)",
   }
 };
 
@@ -116,10 +133,11 @@ static std::string GenTypeBasic(const LanguageParameters &lang,
                                 const Type &type) {
   static const char *gtypename[] = {
     #define FLATBUFFERS_TD(ENUM, IDLTYPE, CTYPE, JTYPE, GTYPE, NTYPE) \
-        #JTYPE, #NTYPE,
+        #JTYPE, #NTYPE, #GTYPE,
       FLATBUFFERS_GEN_TYPES(FLATBUFFERS_TD)
     #undef FLATBUFFERS_TD
   };
+
   return gtypename[type.base_type * GeneratorOptions::kMAX + lang.language];
 }
 
@@ -214,13 +232,17 @@ static std::string GenGetter(const LanguageParameters &lang,
   switch (type.base_type) {
     case BASE_TYPE_STRING: return "__string";
     case BASE_TYPE_STRUCT: return "__struct";
-    case BASE_TYPE_UNION: return "__union";
+    case BASE_TYPE_UNION:  return "__union";
     case BASE_TYPE_VECTOR: return GenGetter(lang, type.VectorType());
-    default:
-      return "bb." + FunctionStart(lang, 'G') + "et" +
-        (GenTypeBasic(lang, type) != "byte"
-          ? MakeCamel(GenTypeGet(lang, type))
-          : "");
+    default: {
+      std::string getter = "bb." + FunctionStart(lang, 'G') + "et";
+      if (type.base_type == BASE_TYPE_BOOL) {
+        getter = "0!=" + getter;
+      } else if (GenTypeBasic(lang, type) != "byte") {
+        getter += MakeCamel(GenTypeGet(lang, type));
+      }
+      return getter;
+    }
   }
 }
 
@@ -300,13 +322,18 @@ static void GenStruct(const LanguageParameters &lang, const Parser &parser,
   if (!struct_def.fixed) {
     // Generate a special accessor for the table that when used as the root
     // of a FlatBuffer
-    code += "  public static " + struct_def.name + " ";
-    code += FunctionStart(lang, 'G') + "etRootAs" + struct_def.name;
-    code += "(ByteBuffer _bb) { ";
+    std::string method_name = FunctionStart(lang, 'G') + "etRootAs" + struct_def.name;
+    std::string method_signature = "  public static " + struct_def.name + " " + method_name;
+      
+    // create convenience method that doesn't require an existing object
+    code += method_signature + "(ByteBuffer _bb) ";
+    code += "{ return " + method_name + "(_bb, new " + struct_def.name+ "()); }\n";
+      
+    // create method that allows object reuse
+    code += method_signature + "(ByteBuffer _bb, " + struct_def.name + " obj) { ";
     code += lang.set_bb_byteorder;
-    code += "return (new " + struct_def.name;
-    code += "()).__init(_bb." + FunctionStart(lang, 'G');
-    code += "etInt(_bb.position()) + _bb.position(), _bb); }\n";
+    code += "return (obj.__init(_bb." + FunctionStart(lang, 'G');
+    code += "etInt(_bb.position()) + _bb.position(), _bb)); }\n";
     if (parser.root_struct_def == &struct_def) {
       if (parser.file_identifier_.length()) {
         // Check if a buffer has the identifier.
@@ -364,7 +391,10 @@ static void GenStruct(const LanguageParameters &lang, const Parser &parser,
         code += "(bb_pos + " + NumToString(field.value.offset) + ")";
       } else {
         code += offset_prefix + getter;
-        code += "(o + bb_pos) : " + default_cast + field.value.constant;
+        code += "(o + bb_pos) : " + default_cast;
+        code += field.value.type.base_type == BASE_TYPE_BOOL
+                ? (field.value.constant == "0" ? "false" : "true")
+                : field.value.constant;
       }
     } else {
       switch (field.value.type.base_type) {
@@ -524,7 +554,12 @@ static void GenStruct(const LanguageParameters &lang, const Parser &parser,
       code += " " + argname + ") { builder." + FunctionStart(lang, 'A') + "dd";
       code += GenMethod(lang, field.value.type) + "(";
       code += NumToString(it - struct_def.fields.vec.begin()) + ", ";
-      code += argname + ", " + field.value.constant;
+      code += argname + ", ";
+      if (field.value.type.base_type == BASE_TYPE_BOOL) {
+        code += field.value.constant == "0" ? "false" : "true";
+      } else {
+        code += field.value.constant;
+      }
       code += "); }\n";
       if (field.value.type.base_type == BASE_TYPE_VECTOR) {
         auto vector_type = field.value.type.VectorType();
@@ -593,15 +628,14 @@ static bool SaveClass(const LanguageParameters &lang, const Parser &parser,
   if (!classcode.length()) return true;
 
   std::string namespace_general;
-  std::string namespace_dir = path;
+  std::string namespace_dir = path;  // Either empty or ends in separator.
   auto &namespaces = parser.namespaces_.back()->components;
   for (auto it = namespaces.begin(); it != namespaces.end(); ++it) {
     if (namespace_general.length()) {
       namespace_general += ".";
-      namespace_dir += kPathSeparator;
     }
     namespace_general += *it;
-    namespace_dir += *it;
+    namespace_dir += *it + kPathSeparator;
   }
   EnsureDirExists(namespace_dir);
 
@@ -611,8 +645,7 @@ static bool SaveClass(const LanguageParameters &lang, const Parser &parser,
   if (needs_includes) code += lang.includes;
   code += classcode;
   code += lang.namespace_end;
-  auto filename = namespace_dir + kPathSeparator + def.name +
-                  lang.file_extension;
+  auto filename = namespace_dir + def.name + lang.file_extension;
   return SaveFile(filename.c_str(), code, false);
 }
 
@@ -641,6 +674,93 @@ bool GenerateGeneral(const Parser &parser,
   }
 
   return true;
+}
+
+static std::string ClassFileName(const LanguageParameters &lang,
+                                 const Parser &parser, const Definition &def,
+                                 const std::string &path) {
+  std::string namespace_general;
+  std::string namespace_dir = path;
+  auto &namespaces = parser.namespaces_.back()->components;
+  for (auto it = namespaces.begin(); it != namespaces.end(); ++it) {
+    if (namespace_general.length()) {
+      namespace_general += ".";
+      namespace_dir += kPathSeparator;
+    }
+    namespace_general += *it;
+    namespace_dir += *it;
+  }
+
+  return namespace_dir + kPathSeparator + def.name + lang.file_extension;
+}
+
+std::string GeneralMakeRule(const Parser &parser,
+                            const std::string &path,
+                            const std::string &file_name,
+                            const GeneratorOptions &opts) {
+  assert(opts.lang <= GeneratorOptions::kMAX);
+  auto lang = language_parameters[opts.lang];
+
+  std::string make_rule;
+
+  for (auto it = parser.enums_.vec.begin();
+       it != parser.enums_.vec.end(); ++it) {
+    if (make_rule != "")
+      make_rule += " ";
+    make_rule += ClassFileName(lang, parser, **it, path);
+  }
+
+  for (auto it = parser.structs_.vec.begin();
+       it != parser.structs_.vec.end(); ++it) {
+    if (make_rule != "")
+      make_rule += " ";
+    make_rule += ClassFileName(lang, parser, **it, path);
+  }
+
+  make_rule += ": ";
+  auto included_files = parser.GetIncludedFilesRecursive(file_name);
+  for (auto it = included_files.begin();
+       it != included_files.end(); ++it) {
+    make_rule += " " + *it;
+  }
+  return make_rule;
+}
+
+std::string BinaryFileName(const Parser &parser,
+                           const std::string &path,
+                           const std::string &file_name) {
+  auto ext = parser.file_extension_.length() ? parser.file_extension_ : "bin";
+  return path + file_name + "." + ext;
+}
+
+bool GenerateBinary(const Parser &parser,
+                    const std::string &path,
+                    const std::string &file_name,
+                    const GeneratorOptions & /*opts*/) {
+  return !parser.builder_.GetSize() ||
+         flatbuffers::SaveFile(
+           BinaryFileName(parser, path, file_name).c_str(),
+           reinterpret_cast<char *>(parser.builder_.GetBufferPointer()),
+           parser.builder_.GetSize(),
+           true);
+}
+
+std::string BinaryMakeRule(const Parser &parser,
+                           const std::string &path,
+                           const std::string &file_name,
+                           const GeneratorOptions & /*opts*/) {
+  if (!parser.builder_.GetSize()) return "";
+  std::string filebase = flatbuffers::StripPath(
+      flatbuffers::StripExtension(file_name));
+  std::string make_rule = BinaryFileName(parser, path, filebase) + ": " +
+      file_name;
+  auto included_files = parser.GetIncludedFilesRecursive(
+      parser.root_struct_def->file);
+  for (auto it = included_files.begin();
+       it != included_files.end(); ++it) {
+    make_rule += " " + *it;
+  }
+  return make_rule;
 }
 
 }  // namespace flatbuffers

@@ -288,6 +288,31 @@ public:
     return reinterpret_cast<const uint8_t *>(&length_ + 1);
   }
 
+  template<typename K> return_type LookupByKey(K key) const {
+    auto span = size();
+    uoffset_t start = 0;
+    // Perform binary search for key.
+    while (span) {
+      // Compare against middle element of current span.
+      auto middle = span / 2;
+      auto table = Get(start + middle);
+      auto comp = table->KeyCompareWithValue(key);
+      if (comp > 0) {
+        // Greater than. Adjust span and try again.
+        span = middle;
+      } else if (comp < 0) {
+        // Less than. Adjust span and try again.
+        middle++;
+        start += middle;
+        span -= middle;
+      } else {
+        // Found element.
+        return table;
+      }
+    }
+    return nullptr;  // Key not found.
+  }
+
 protected:
   // This class is only used to access pre-existing data. Don't ever
   // try to construct these manually.
@@ -304,6 +329,10 @@ template<typename T> static inline size_t VectorLength(const Vector<T> *v) {
 
 struct String : public Vector<char> {
   const char *c_str() const { return reinterpret_cast<const char *>(Data()); }
+
+  bool operator <(const String &o) const {
+    return strcmp(c_str(), o.c_str()) < 0;
+  }
 };
 
 // Simple indirection for buffer allocation, to allow this to be overridden
@@ -338,7 +367,7 @@ class vector_downward {
   }
 
   uint8_t *make_space(size_t len) {
-    if (buf_ > cur_ - len) {
+    if (len > static_cast<size_t>(cur_ - buf_)) {
       auto old_size = size();
       reserved_ += std::max(len, growth_policy(reserved_));
       auto new_buf = allocator_.allocate(reserved_);
@@ -425,6 +454,7 @@ class FlatBufferBuilder FLATBUFFERS_FINAL_CLASS {
     buf_.clear();
     offsetbuf_.clear();
     vtables_.clear();
+    minalign_ = 1;
   }
 
   // The current size of the serialized buffer, counting from the end.
@@ -646,22 +676,12 @@ class FlatBufferBuilder FLATBUFFERS_FINAL_CLASS {
     return Offset<Vector<T>>(EndVector(len));
   }
 
-  // Specialized version for non-copying use cases. Data to be written later.
-  // After calling this function, GetBufferPointer() can be cast to the
-  // corresponding Vector<> type to write the data (through Data()).
-  template<typename T> Offset<Vector<T>> CreateUninitializedVector(size_t len) {
-    NotNested();
-    StartVector(len, sizeof(T));
-    buf_.make_space(len * sizeof(T));
-    return Offset<Vector<T>>(EndVector(len));
-  }
-
-  template<typename T> Offset<Vector<T>> CreateVector(const std::vector<T> &v){
+  template<typename T> Offset<Vector<T>> CreateVector(const std::vector<T> &v) {
     return CreateVector(v.data(), v.size());
   }
 
   template<typename T> Offset<Vector<const T *>> CreateVectorOfStructs(
-                                                      const T *v, size_t len) {
+                                                       const T *v, size_t len) {
     NotNested();
     StartVector(len * sizeof(T) / AlignOf<T>(), AlignOf<T>());
     PushBytes(reinterpret_cast<const uint8_t *>(v), sizeof(T) * len);
@@ -669,8 +689,41 @@ class FlatBufferBuilder FLATBUFFERS_FINAL_CLASS {
   }
 
   template<typename T> Offset<Vector<const T *>> CreateVectorOfStructs(
-                                                     const std::vector<T> &v) {
+                                                      const std::vector<T> &v) {
     return CreateVectorOfStructs(v.data(), v.size());
+  }
+
+  template<typename T> Offset<Vector<Offset<T>>> CreateVectorOfSortedTables(
+                                                     Offset<T> *v, size_t len) {
+    std::sort(v, v + len,
+      [this](const Offset<T> &a, const Offset<T> &b) -> bool {
+        auto table_a = reinterpret_cast<T *>(buf_.data_at(a.o));
+        auto table_b = reinterpret_cast<T *>(buf_.data_at(b.o));
+        return table_a->KeyCompareLessThan(table_b);
+      }
+    );
+    return CreateVector(v, len);
+  }
+
+  template<typename T> Offset<Vector<Offset<T>>> CreateVectorOfSortedTables(
+                                                            std::vector<T> *v) {
+    return CreateVectorOfSortedTables(v->data(), v->size());
+  }
+
+  // Specialized version for non-copying use cases. Write the data any time
+  // later to the returned buffer pointer `buf`.
+  uoffset_t CreateUninitializedVector(size_t len, size_t elemsize,
+                                      uint8_t **buf) {
+    NotNested();
+    StartVector(len, elemsize);
+    *buf = buf_.make_space(len * elemsize);
+    return EndVector(len);
+  }
+
+  template<typename T> Offset<Vector<T>> CreateUninitializedVector(
+                                                    size_t len, T **buf) {
+    return CreateUninitializedVector(len, sizeof(T),
+                                     reinterpret_cast<uint8_t **>(buf));
   }
 
   static const size_t kFileIdentifierLength = 4;

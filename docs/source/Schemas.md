@@ -271,10 +271,13 @@ Current understood attributes:
     meaning that any value N specified in the schema will end up
     representing 1<<N, or if you don't specify values at all, you'll get
     the sequence 1, 2, 4, 8, ...
--   `nested_flatbuffer: table_name` (on a field): this indicates that the field
+-   `nested_flatbuffer: "table_name"` (on a field): this indicates that the field
     (which must be a vector of ubyte) contains flatbuffer data, for which the
     root type is given by `table_name`. The generated code will then produce
     a convenient accessor for the nested FlatBuffer.
+-   `key` (on a field): this field is meant to be used as a key when sorting
+    a vector of the type of table it sits in. Can be used for in-place
+    binary search.
 
 ## JSON Parsing
 
@@ -298,6 +301,10 @@ JSON:
     representing flags, you may place multiple inside a string
     separated by spaces to OR them, e.g.
     `field: "EnumVal1 EnumVal2"` or `field: "Enum.EnumVal1 Enum.EnumVal2"`.
+-   Similarly, for unions, these need to specified with two fields much like
+    you do when serializing from code. E.g. for a field `foo`, you must
+    add a field `foo_type: FooOne` right before the `foo` field, where
+    `FooOne` would be the table out of the union you want to use.
 
 When parsing JSON, it recognizes the following escape codes in strings:
 

@@ -70,15 +70,30 @@ std::string CreateFlatBufferTest() {
   unsigned char inv_data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
   auto inventory = builder.CreateVector(inv_data, 10);
 
+  // Alternatively, create the vector first, and fill in data later:
+  // unsigned char *inv_buf = nullptr;
+  // auto inventory = builder.CreateUninitializedVector<unsigned char>(
+  //                                                              10, &inv_buf);
+  // memcpy(inv_buf, inv_data, 10);
+
   Test tests[] = { Test(10, 20), Test(30, 40) };
   auto testv = builder.CreateVectorOfStructs(tests, 2);
 
   // create monster with very few fields set:
   // (same functionality as CreateMonster below, but sets fields manually)
+  flatbuffers::Offset<Monster> mlocs[3];
   auto fred = builder.CreateString("Fred");
-  MonsterBuilder mb(builder);
-  mb.add_name(fred);
-  auto mloc2 = mb.Finish();
+  auto barney = builder.CreateString("Barney");
+  auto wilma = builder.CreateString("Wilma");
+  MonsterBuilder mb1(builder);
+  mb1.add_name(fred);
+  mlocs[0] = mb1.Finish();
+  MonsterBuilder mb2(builder);
+  mb2.add_name(barney);
+  mlocs[1] = mb2.Finish();
+  MonsterBuilder mb3(builder);
+  mb3.add_name(wilma);
+  mlocs[2] = mb3.Finish();
 
   // Create an array of strings:
   flatbuffers::Offset<flatbuffers::String> strings[2];
@@ -86,12 +101,12 @@ std::string CreateFlatBufferTest() {
   strings[1] = builder.CreateString("fred");
   auto vecofstrings = builder.CreateVector(strings, 2);
 
-  // Create an array of tables:
-  auto vecoftables = builder.CreateVector(&mloc2, 1);
+  // Create an array of sorted tables, can be used with binary search when read:
+  auto vecoftables = builder.CreateVectorOfSortedTables(mlocs, 3);
 
   // shortcut for creating monster with all fields set:
   auto mloc = CreateMonster(builder, &vec, 150, 80, name, inventory, Color_Blue,
-                            Any_Monster, mloc2.Union(), // Store a union.
+                            Any_Monster, mlocs[1].Union(), // Store a union.
                             testv, vecofstrings, vecoftables, 0);
 
   FinishMonsterBuffer(builder, mloc);
@@ -137,7 +152,7 @@ void AccessFlatBufferTest(const std::string &flatbuf) {
   TEST_EQ(pos->test3().b(), 20);
 
   auto inventory = monster->inventory();
-  TEST_EQ(VectorLength(inventory), 10);  // Works even if inventory is null.
+  TEST_EQ(VectorLength(inventory), 10UL);  // Works even if inventory is null.
   TEST_NOTNULL(inventory);
   unsigned char inv_data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
   for (auto it = inventory->begin(); it != inventory->end(); ++it)
@@ -157,9 +172,15 @@ void AccessFlatBufferTest(const std::string &flatbuf) {
 
   // Example of accessing a vector of tables:
   auto vecoftables = monster->testarrayoftables();
-  TEST_EQ(vecoftables->Length(), 1U);
+  TEST_EQ(vecoftables->Length(), 3U);
   for (auto it = vecoftables->begin(); it != vecoftables->end(); ++it)
-    TEST_EQ(strcmp(it->name()->c_str(), "Fred"), 0);
+    TEST_EQ(strlen(it->name()->c_str()) >= 4, true);
+  TEST_EQ(strcmp(vecoftables->Get(0)->name()->c_str(), "Barney"), 0);
+  TEST_EQ(strcmp(vecoftables->Get(1)->name()->c_str(), "Fred"), 0);
+  TEST_EQ(strcmp(vecoftables->Get(2)->name()->c_str(), "Wilma"), 0);
+  TEST_NOTNULL(vecoftables->LookupByKey("Barney"));
+  TEST_NOTNULL(vecoftables->LookupByKey("Fred"));
+  TEST_NOTNULL(vecoftables->LookupByKey("Wilma"));
 
   // Since Flatbuffers uses explicit mechanisms to override the default
   // compiler alignment, double check that the compiler indeed obeys them:
@@ -228,7 +249,7 @@ void ParseProtoTest() {
     "tests/prototest/test.golden", false, &goldenfile), true);
 
   // Parse proto.
-  flatbuffers::Parser parser(true);
+  flatbuffers::Parser parser(false, true);
   TEST_EQ(parser.Parse(protofile.c_str(), nullptr), true);
 
   // Generate fbs.
@@ -472,8 +493,9 @@ void FuzzTest2() {
 }
 
 // Test that parser errors are actually generated.
-void TestError(const char *src, const char *error_substr) {
-  flatbuffers::Parser parser;
+void TestError(const char *src, const char *error_substr,
+               bool strict_json = false) {
+  flatbuffers::Parser parser(strict_json);
   TEST_EQ(parser.Parse(src), false);  // Must signal error
   // Must be the error we're expecting
   TEST_NOTNULL(strstr(parser.error_.c_str(), error_substr));
@@ -501,6 +523,9 @@ void ErrorTest() {
   TestError("union Z { X } table X { Y:Z; } root_type X; { Y_type: 99, Y: {",
             "type id");
   TestError("table X { Y:int; } root_type X; { Z:", "unknown field");
+  TestError("table X { Y:int; } root_type X; { Y:", "string constant", true);
+  TestError("table X { Y:int; } root_type X; { \"Y\":1, }", "string constant",
+            true);
   TestError("struct X { Y:int; Z:int; } table W { V:X; } root_type W; "
             "{ V:{ Y:1 } }", "incomplete");
   TestError("enum E:byte { A } table X { Y:E; } root_type X; { Y:U }",
